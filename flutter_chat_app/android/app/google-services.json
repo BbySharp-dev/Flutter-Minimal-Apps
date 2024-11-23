@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "615254432241",
+    "project_id": "flutterchatapp-cybersoft",
+    "storage_bucket": "flutterchatapp-cybersoft.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:615254432241:android:823a3f46691123b742cc50",
+        "android_client_info": {
+          "package_name": "com.example.flutter_chat_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA-upQemhVkooYVhLFgNsrhuDmsU-KnoaI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
