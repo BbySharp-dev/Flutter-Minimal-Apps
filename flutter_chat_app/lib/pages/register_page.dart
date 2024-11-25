@@ -1,31 +1,64 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutter_chat_app/auth/auth_service.dart';
 import '../components/my_button.dart';
 import '../components/my_textfield.dart';
 
 class RegisterPage extends StatelessWidget {
   RegisterPage({super.key, required this.onTap});
 
-  // email and password text controllers
+  // Controllers để quản lý dữ liệu nhập vào từ các TextField
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _pwController = TextEditingController();
   final TextEditingController _confirmPwController = TextEditingController();
 
-  // tap to go to register page
+  // Hàm chuyển đến trang Login
   final void Function()? onTap;
 
-  // register method
-  void register() {}
+  // Phương thức xử lý đăng ký
+  void register(BuildContext context) {
+    // Khởi tạo service cho Firebase Auth
+    final _auth = AuthService();
+
+    // Kiểm tra nếu mật khẩu và mật khẩu xác nhận khớp nhau
+    if (_pwController.text == _confirmPwController.text) {
+      try {
+        // Thực hiện đăng ký tài khoản
+        _auth.signUpWithEmailPassword(
+          _emailController.text,
+          _pwController.text,
+        );
+      } catch (e) {
+        // Hiển thị hộp thoại lỗi nếu gặp vấn đề
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text(e.toString()),
+            );
+          },
+        );
+      }
+    } else {
+      // Hiển thị hộp thoại thông báo lỗi nếu mật khẩu không khớp
+      showDialog(
+        context: context,
+        builder: (context) => const AlertDialog(
+          title: Text("Passwords don't match"),
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // Màu nền của toàn bộ màn hình được lấy từ Theme
       backgroundColor: Theme.of(context).colorScheme.surface,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // logo
+            // Biểu tượng logo
             Icon(
               Icons.message,
               size: 60,
@@ -34,7 +67,7 @@ class RegisterPage extends StatelessWidget {
 
             const SizedBox(height: 50),
 
-            // welcome backe message
+            // Dòng text chào mừng người dùng
             Text(
               "Let's create an account for you",
               style: TextStyle(
@@ -45,7 +78,7 @@ class RegisterPage extends StatelessWidget {
 
             const SizedBox(height: 50),
 
-            // email textfield
+            // TextField nhập email
             MyTextfield(
               hintText: "Email",
               obscureText: false,
@@ -54,7 +87,7 @@ class RegisterPage extends StatelessWidget {
 
             const SizedBox(height: 10),
 
-            //pw textfield
+            // TextField nhập mật khẩu
             MyTextfield(
               hintText: "Password",
               obscureText: true,
@@ -63,7 +96,7 @@ class RegisterPage extends StatelessWidget {
 
             const SizedBox(height: 10),
 
-            //confirm pw textfield
+            // TextField nhập mật khẩu xác nhận
             MyTextfield(
               hintText: "Confirm Password",
               obscureText: true,
@@ -72,15 +105,15 @@ class RegisterPage extends StatelessWidget {
 
             const SizedBox(height: 25),
 
-            // login button
+            // Nút đăng ký
             MyButton(
               text: "Register",
-              onTap: register,
+              onTap: () => register(context),
             ),
 
             const SizedBox(height: 25),
 
-            //register now
+            // Phần chuyển sang đăng nhập
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -106,33 +139,3 @@ class RegisterPage extends StatelessWidget {
     );
   }
 }
-
-/* 
-  * **Kiến thức cần nhớ**:
-    - **Controller**:
-      - Sử dụng `TextEditingController` để quản lý dữ liệu nhập vào từ 3 `TextField`: Email, Password, và Confirm Password.
-      - Đảm bảo gọi `dispose()` để giải phóng controller khi widget không còn tồn tại, nếu widget chuyển thành `StatefulWidget`.
-
-    - **Custom Widgets**:
-      - `MyTextfield` và `MyButton` giúp tối ưu hóa việc tái sử dụng UI components.
-
-    - **Theme**:
-      - Màu sắc được quản lý đồng bộ thông qua `Theme`, đảm bảo giao diện phù hợp với toàn bộ ứng dụng.
-
-    - **GestureDetector**:
-      - Sử dụng `GestureDetector` để thêm sự kiện nhấn vào phần "Login now", điều hướng đến trang đăng nhập.
-
-  ! **Lưu ý**:
-    - **Password Validation**:
-      - Hiện tại, không có logic xác nhận mật khẩu và xác nhận lại mật khẩu. Hãy thêm kiểm tra để đảm bảo hai trường mật khẩu khớp nhau.
-    - **Security**:
-      - Hãy mã hóa mật khẩu trước khi gửi đến server.
-    - **Responsiveness**:
-      - Sử dụng `SingleChildScrollView` nếu giao diện có khả năng bị tràn màn hình trên các thiết bị nhỏ.
-
-  TODO:
-    - Thêm xác thực dữ liệu nhập (email hợp lệ, mật khẩu đủ độ dài).
-    - Xử lý logic trong hàm `register()` khi đăng ký thành công hoặc lỗi.
-    - Tích hợp API để gửi yêu cầu đăng ký đến server.
-    - Cải thiện trải nghiệm người dùng với loading indicator.
-*/

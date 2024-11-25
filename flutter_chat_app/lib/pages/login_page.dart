@@ -1,29 +1,55 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_app/components/my_button.dart';
 import 'package:flutter_chat_app/components/my_textfield.dart';
+import '../auth/auth_service.dart';
 
 class LoginPage extends StatelessWidget {
   LoginPage({super.key, required this.onTap});
 
-  // email and password text controllers
+  // Controllers quản lý dữ liệu nhập của email và mật khẩu
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _pwController = TextEditingController();
 
-  // tap to go to register page
+  // Hàm chuyển đến trang đăng ký
   final void Function()? onTap;
 
-  // login method
-  void login() {}
+  // Phương thức xử lý đăng nhập
+  void login(BuildContext context) async {
+    // Khởi tạo AuthService để thực hiện các thao tác Firebase Auth
+    final authService = AuthService();
+
+    // Thử thực hiện đăng nhập
+    try {
+      await authService.signInWithEmailPassword(
+        _emailController.text,
+        _pwController.text,
+      );
+    }
+
+    // Bắt lỗi khi đăng nhập thất bại
+    catch (e) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(e.toString()), // Hiển thị mã lỗi
+            content: Text(e.toString()), // Nội dung chi tiết lỗi
+          );
+        },
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // Màu nền toàn bộ giao diện
       backgroundColor: Theme.of(context).colorScheme.surface,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // logo
+            // Biểu tượng logo
             Icon(
               Icons.message,
               size: 60,
@@ -32,9 +58,9 @@ class LoginPage extends StatelessWidget {
 
             const SizedBox(height: 50),
 
-            // welcome backe message
+            // Thông báo chào mừng người dùng
             Text(
-              "Wellcome back, you've been missed!",
+              "Welcome back, you've been missed!",
               style: TextStyle(
                 color: Theme.of(context).colorScheme.primary,
                 fontSize: 16,
@@ -43,7 +69,7 @@ class LoginPage extends StatelessWidget {
 
             const SizedBox(height: 50),
 
-            // email textfield
+            // TextField để nhập email
             MyTextfield(
               hintText: "Email",
               obscureText: false,
@@ -52,7 +78,7 @@ class LoginPage extends StatelessWidget {
 
             const SizedBox(height: 10),
 
-            //pw textfield
+            // TextField để nhập mật khẩu
             MyTextfield(
               hintText: "Password",
               obscureText: true,
@@ -61,15 +87,15 @@ class LoginPage extends StatelessWidget {
 
             const SizedBox(height: 25),
 
-            // login button
+            // Nút đăng nhập
             MyButton(
               text: "Login",
-              onTap: login,
+              onTap: () => login(context), // Gọi hàm login khi nhấn
             ),
 
             const SizedBox(height: 25),
 
-            //register now
+            // Phần chuyển hướng đến trang đăng ký
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -79,12 +105,13 @@ class LoginPage extends StatelessWidget {
                       TextStyle(color: Theme.of(context).colorScheme.primary),
                 ),
                 GestureDetector(
-                  onTap: onTap,
+                  onTap: onTap, // Gọi hàm chuyển hướng khi nhấn
                   child: Text(
-                    " Register now",
+                    "Register now",
                     style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Theme.of(context).colorScheme.primary),
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
                   ),
                 ),
               ],
@@ -95,30 +122,3 @@ class LoginPage extends StatelessWidget {
     );
   }
 }
-
-/* 
-  * **Kiến thức cần nhớ**:
-    - **Controller**:
-      - Sử dụng `TextEditingController` để quản lý dữ liệu nhập vào từ hai `TextField` (Email và Password).
-      - Đừng quên gọi `dispose()` để giải phóng controller khi widget không còn tồn tại nếu sử dụng `StatefulWidget`.
-
-    - **Custom Widgets**:
-      - `MyTextfield` và `MyButton` là các widget tùy chỉnh, giúp tái sử dụng giao diện và logic trong ứng dụng.
-
-    - **Theme**:
-      - Tất cả các màu trong widget được lấy từ `Theme` để đảm bảo đồng nhất giao diện. Màu được gọi từ `Theme.of(context).colorScheme`.
-
-    - **GestureDetector**:
-      - `GestureDetector` được sử dụng để tạo hiệu ứng nhấn cho `Register now`, giúp mở trang đăng ký.
-
-  ! **Lưu ý**:
-    - **Không có logic cho nút Login**: Chưa có logic để xử lý `login()`. Cần bổ sung tính năng kiểm tra email/password và kết nối API.
-    - **Validation**: Không có logic xác thực dữ liệu đầu vào trong các `TextField`. Hãy thêm xác thực để đảm bảo dữ liệu hợp lệ.
-    - **TextOverflow**: Với `Text` trong ứng dụng, nếu nội dung có khả năng bị tràn, hãy sử dụng thuộc tính `overflow` hoặc `maxLines`.
-
-  TODO:
-    - Thêm thông báo lỗi cho trường hợp nhập sai email/password.
-    - Xử lý chuyển màn hình khi đăng nhập thành công.
-    - Cải thiện bố cục để hỗ trợ đa ngôn ngữ.
-    - Thêm chức năng `loading` khi chờ kết quả từ server.
-*/
