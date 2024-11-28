@@ -64,8 +64,9 @@ class HomePage extends StatelessWidget {
             context,
             MaterialPageRoute(
               builder: (context) => ChatPage(
-                receiverEmail: userData[
-                    "email"], // * Truyền email của người nhận đến trang ChatPage
+                // * Truyền email của người nhận đến trang ChatPage
+                receiverEmail: userData["email"],
+                receiverID: userData["uid"],
               ),
             ),
           );
