@@ -1,9 +1,16 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthService {
   // **Instance of Firebase Auth**
   // Sử dụng FirebaseAuth để quản lý các chức năng xác thực (sign in, sign up, sign out)
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  // get current user
+  User? getCurrentUser() {
+    return _auth.currentUser;
+  }
 
   // **Sign in với email và password**
   // Hàm này giúp người dùng đăng nhập với email và mật khẩu.
@@ -15,6 +22,15 @@ class AuthService {
         email: email,
         password: password,
       );
+
+      // Lưu thông tin người dùng
+      _firestore.collection("Users").doc(userCredential.user!.uid).set(
+        {
+          'uid': userCredential.user!.uid,
+          'email': email,
+        },
+      );
+
       return userCredential;
     } on FirebaseAuthException catch (e) {
       // **Xử lý lỗi từ Firebase**
@@ -33,6 +49,14 @@ class AuthService {
           await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
+      );
+
+      // Lưu thông tin người dùng
+      _firestore.collection("Users").doc(userCredential.user!.uid).set(
+        {
+          'uid': userCredential.user!.uid,
+          'email': email,
+        },
       );
 
       // Trả về thông tin người dùng vừa tạo

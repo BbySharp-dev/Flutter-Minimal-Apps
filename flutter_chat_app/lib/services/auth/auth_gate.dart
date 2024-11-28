@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_chat_app/auth/login_or_register.dart';
+import 'package:flutter_chat_app/services/auth/login_or_register.dart';
 import 'package:flutter_chat_app/pages/home_page.dart';
 
 // **AuthGate Widget**
@@ -22,7 +22,7 @@ class AuthGate extends StatelessWidget {
           // Nếu stream trả về dữ liệu hợp lệ (có người dùng đăng nhập),
           // chuyển hướng đến trang HomePage.
           if (snapshot.hasData) {
-            return const HomePage();
+            return HomePage();
           }
 
           // **Trạng thái: Người dùng chưa đăng nhập**
